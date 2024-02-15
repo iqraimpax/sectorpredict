@@ -1,7 +1,7 @@
 from azure.storage.blob import BlobServiceClient
 import warnings
 import io
-# Suppress all warnings
+import dash_auth
 warnings.filterwarnings("ignore")
 import dash
 import dash_core_components as dcc
@@ -15,6 +15,15 @@ container_name = 'stocksplit'
 container_client = blob_service_client.get_container_client(container_name)
 from datetime import datetime
 columns = ['Index', 'Company','Segment', 'Segment Description', 'text', 'Predicted', 'Corrected']
+app = dash.Dash(__name__)
+
+VALID_USERNAME_PASSWORD_PAIRS = {
+    'segmentapp': 'segments'
+}
+auth = dash_auth.BasicAuth(
+    app,
+    VALID_USERNAME_PASSWORD_PAIRS
+)
 
 # Create the DataFrame
 corrected = pd.DataFrame(columns=columns)
