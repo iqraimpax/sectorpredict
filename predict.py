@@ -184,9 +184,9 @@ if __name__ == '__main__':
 def save_and_close(n_clicks):
     if n_clicks:
         container_client.upload_blob(blob_name, corrected.to_csv(), overwrite=True)
-        return "Saved - you can now close this window"
+        #return "Saved - you can now close this window"
     
-    #return ""
+    return ""
 
 
 
