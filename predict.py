@@ -186,7 +186,7 @@ def save_and_close(n_clicks):
         container_client.upload_blob(blob_name, corrected.to_csv(), overwrite=True)
         #return "Saved - you can now close this window"
     
-    return ""
+    #return ""
 
 
 
