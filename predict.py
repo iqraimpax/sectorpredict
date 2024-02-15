@@ -19,9 +19,6 @@ columns = ['Index', 'Company','Segment', 'Segment Description', 'text', 'Predict
 # Create the DataFrame
 corrected = pd.DataFrame(columns=columns)
 
-# Add current date and time to the DataFrame name
-current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
-blob_name = f"corrected_{current_datetime}.csv"
 
 i=0
 j=0
@@ -128,6 +125,8 @@ def update_table(n_clicks_next, n_clicks_confirm, dropdown_value):
         j=j+1
         #updated_content = corrected.to_csv(blob_name, index=False)
         if j % 20 ==0:
+            blob_name = f"corrected_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv"
+
             container_client.upload_blob(blob_name, corrected.to_csv(), overwrite=True)
 
 
@@ -169,6 +168,7 @@ def update_table(n_clicks_next, n_clicks_confirm, dropdown_value):
         corrected.loc[len(corrected)] = new_row_values
         #updated_content = corrected.to_csv(blob_name, index=False)
         if j%20==0:
+            blob_name = f"corrected_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv"
             container_client.upload_blob(blob_name, corrected.to_csv(), overwrite=True)
 
 
