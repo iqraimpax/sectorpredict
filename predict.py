@@ -125,7 +125,8 @@ def update_table(n_clicks_next, n_clicks_confirm, dropdown_value):
         j=j+1
         #updated_content = corrected.to_csv(blob_name, index=False)
         if j % 20 ==0:
-            blob_name = f"corrected_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv"
+            datestr=datetime.now().strftime("%Y%m%d_%H%M%S")
+            blob_name = f"corrected_{datestr}.csv"
 
             container_client.upload_blob(blob_name, corrected.to_csv(), overwrite=True)
 
@@ -168,7 +169,8 @@ def update_table(n_clicks_next, n_clicks_confirm, dropdown_value):
         corrected.loc[len(corrected)] = new_row_values
         #updated_content = corrected.to_csv(blob_name, index=False)
         if j%20==0:
-            blob_name = f"corrected_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv"
+            datestr=datetime.now().strftime("%Y%m%d_%H%M%S")
+            blob_name = f"corrected_{datestr}.csv"
             container_client.upload_blob(blob_name, corrected.to_csv(), overwrite=True)
 
 
