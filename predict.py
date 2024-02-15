@@ -24,6 +24,7 @@ current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
 blob_name = f"corrected_{current_datetime}.csv"
 
 i=0
+j=0
 dropdown_value = None
 options = ['Not Applicable', 'Energy Management & Efficiency', 'Alternative Energy', 'Sustainable Food & Agriculture', 'Digital Infrastructure', 'Transport Solutions', 'Resource Efficiency & Waste Management', 'Environmental Services & Resources', 'Water Infrastructure & Technologies'] 
 
@@ -70,9 +71,8 @@ app.layout = html.Div(
         ),
         html.P(''),
         html.Button('Confirm change', id='confirm-button', n_clicks=0),
-        html.P(''),
-        html.Button('Save and Close', id='save-close-button',style={'color': 'red'}),
-        html.P('', id='save-close-button-message', style={'color': 'red'})
+        html.P('')
+ 
 
     ]
 )
@@ -84,11 +84,15 @@ app.layout = html.Div(
     [State('dropdown', 'value')]
 )
 def update_table(n_clicks_next, n_clicks_confirm, dropdown_value):
+    
     global i
+    global j
+    
+    print(j)
     global corrected
     ctx = dash.callback_context
     button_id = ctx.triggered[0]['prop_id'].split('.')[0]
-
+    
     if button_id == 'confirm-button' and dropdown_value is not None:
         current_row = df.iloc[i]
         input_str = df.iloc[i, :].tolist()
@@ -119,16 +123,20 @@ def update_table(n_clicks_next, n_clicks_confirm, dropdown_value):
         new_row_values = [current_row.name, current_row['Company'], current_row['Segment'], current_row['Segment Description'], current_row['text'], current_row['Predicted'], dropdown_value]
         print(new_row_values)
         
+        
         corrected.loc[len(corrected)] = new_row_values
+        j=j+1
         #updated_content = corrected.to_csv(blob_name, index=False)
-        #container_client.upload_blob(blob_name, corrected.to_csv(), overwrite=True)
+        if j % 20 ==0:
+            container_client.upload_blob(blob_name, corrected.to_csv(), overwrite=True)
 
 
-        print("New row added and saved to Azure Blob Storage.")
+            print("New row added and saved to Azure Blob Storage.")
 
         i += 1
 
     else:
+        j=j+1
         current_row_index = i
         current_row = df.iloc[current_row_index]
 
@@ -160,10 +168,12 @@ def update_table(n_clicks_next, n_clicks_confirm, dropdown_value):
         
         corrected.loc[len(corrected)] = new_row_values
         #updated_content = corrected.to_csv(blob_name, index=False)
-        #container_client.upload_blob(blob_name, corrected.to_csv(), overwrite=True)
+        if j%20==0:
+            container_client.upload_blob(blob_name, corrected.to_csv(), overwrite=True)
 
 
-        print("New row added and saved to Azure Blob Storage.")
+            print("New row added and saved to Azure Blob Storage.")
+
 
         i += 1
         
@@ -175,18 +185,6 @@ def update_table(n_clicks_next, n_clicks_confirm, dropdown_value):
 if __name__ == '__main__':
     app.run_server(debug=True)
 
-
-# Define the callback function to update the message
-@app.callback(
-    Output('save-close-button-message', 'children'),
-    [Input('save-close-button', 'n_clicks')]
-)
-def save_and_close(n_clicks):
-    if n_clicks:
-        container_client.upload_blob(blob_name, corrected.to_csv(), overwrite=True)
-        #return "Saved - you can now close this window"
-    
-    #return ""
 
 
 
